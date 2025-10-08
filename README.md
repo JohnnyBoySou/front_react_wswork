@@ -1,70 +1,113 @@
-# Getting Started with Create React App
+# Sistema de Gerenciamento de Veículos
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Sistema web desenvolvido em React para gerenciamento completo de marcas, modelos e carros. Permite cadastrar, visualizar, editar e excluir informações de veículos de forma intuitiva e organizada.
 
-## Available Scripts
+## 🚀 Funcionalidades
 
-In the project directory, you can run:
+- **Gerenciamento de Marcas**: Cadastre e gerencie marcas de veículos
+- **Gerenciamento de Modelos**: Associe modelos às marcas cadastradas
+- **Gerenciamento de Carros**: Registre carros completos com marca, modelo, cor, placa e ano
+- **Dashboard Interativo**: Visualize todos os dados organizados em abas com contadores
+- **Filtros por Marca**: Filtre carros por marca específica
+- **Interface Moderna**: Design responsivo e intuitivo com Tailwind CSS
+- **Validação de Formulários**: Validação robusta usando Zod e React Hook Form
 
-### `npm start`
+## 🛠️ Tecnologias Utilizadas
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **React 19** - Biblioteca para construção da interface
+- **TypeScript** - Tipagem estática para maior segurança
+- **Vite** - Build tool moderna e rápida
+- **React Router** - Gerenciamento de rotas
+- **Tailwind CSS** - Framework CSS utilitário
+- **React Hook Form** - Gerenciamento de formulários
+- **Zod** - Validação de esquemas
+- **Axios** - Cliente HTTP para consumo de API
+- **Hugeicons React** - Biblioteca de ícones
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📋 Pré-requisitos
 
-### `npm test`
+- Node.js (versão 18 ou superior)
+- NPM ou Yarn
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ⚙️ Instalação
+
+1. Clone o repositório:
+```bash
+git clone <url-do-repositório>
+```
+
+2. Entre na pasta do projeto:
+```bash
+cd front_react_wswork
+```
+
+3. Instale as dependências:
+```bash
+npm install
+```
+
+## 🎯 Scripts Disponíveis
+
+### `npm run dev`
+
+Executa a aplicação em modo de desenvolvimento.\
+Abra [http://localhost:5173](http://localhost:5173) para visualizar no navegador.
+
+A página recarrega automaticamente quando você faz alterações.\
+Você também verá erros de lint no console.
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Compila a aplicação para produção na pasta `dist`.\
+Otimiza o build para melhor performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+O build é minificado e os arquivos incluem hashes.\
+Sua aplicação está pronta para deploy!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### `npm run preview`
 
-### `npm run eject`
+Visualiza a versão de produção localmente após o build.\
+Útil para testar o build de produção antes do deploy.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### `npm run lint`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Executa o linter (ESLint) para verificar problemas no código.\
+Ajuda a manter a qualidade e consistência do código.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📁 Estrutura do Projeto
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+src/
+├── components/          # Componentes reutilizáveis
+│   ├── brand/          # Componentes de marcas
+│   ├── model/          # Componentes de modelos
+│   └── car/            # Componentes de carros
+├── routes/             # Páginas/Rotas da aplicação
+│   ├── dashboard/      # Dashboard principal
+│   ├── brands/         # Rotas de marcas
+│   ├── models/         # Rotas de modelos
+│   └── cars/           # Rotas de carros
+├── services/           # Serviços de API
+│   ├── brand.ts        # Serviço de marcas
+│   ├── models.ts       # Serviço de modelos
+│   ├── cars.ts         # Serviço de carros
+│   └── fetch.ts        # Configuração HTTP
+└── index.tsx           # Ponto de entrada da aplicação
+```
 
-## Learn More
+## 🔗 API
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Este projeto consome uma API REST para gerenciar os dados. Configure a URL base da API no arquivo de serviços (`services/fetch.ts`).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🎨 Interface
 
-### Code Splitting
+A aplicação possui uma interface moderna e responsiva com:
+- Cards visuais para cada entidade (marcas, modelos, carros)
+- Sistema de abas para navegação entre seções
+- Modais para criação e edição de dados
+- Estados de loading e empty state
+- Confirmações para ações destrutivas
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 📝 Licença
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Este projeto é privado e de uso interno
