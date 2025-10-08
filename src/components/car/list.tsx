@@ -171,7 +171,7 @@ export default function CarList() {
                         </div>
                         <div className="mb-6">
                             <p className="text-gray-700">
-                                Tem certeza que deseja excluir o carro <strong>"{carToDelete.name}"</strong>?
+                                Tem certeza que deseja excluir o carro <strong>"{carToDelete.model.name}"</strong>?
                             </p>
                             <p className="text-sm text-gray-500 mt-2">
                                 Esta ação não pode ser desfeita.
