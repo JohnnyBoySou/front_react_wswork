@@ -5,10 +5,12 @@ import CarAdd from '@/components/car/add';
 import BrandService from '@/services/brand';
 import ModelService from '@/services/models';
 import { CheckmarkCircle02Icon, ArrowRight01Icon, Loading03Icon } from 'hugeicons-react';
+import { useNavigate } from 'react-router';
 
 type Step = 'brand' | 'model' | 'car' | 'complete';
 
 export default function Home() {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<Step>('brand');
   const [isCheckingData, setIsCheckingData] = useState(true);
   const [hasBrands, setHasBrands] = useState(false);
@@ -19,17 +21,12 @@ export default function Home() {
       try {
         setIsCheckingData(true);
         
-        // Verificar se existem brands
         const brands = await BrandService.list(1, 1);
-        const brandsExist = brands.length > 0;
-        setHasBrands(brandsExist);
+        setHasBrands(brands.length > 0);
 
-        // Verificar se existem models
         const models = await ModelService.list(1, 1);
-        const modelsExist = models.length > 0;
-        setHasModels(modelsExist);
+        setHasModels( models.length > 0);
 
-        // Sempre começa na etapa brand
         setCurrentStep('brand');
       } catch (error) {
         console.error('Erro ao verificar dados existentes:', error);
@@ -54,9 +51,10 @@ export default function Home() {
     setCurrentStep('complete');
   };
 
-  const handleRestart = () => {
-    setCurrentStep('brand');
+  const handleDashboard = () => {
+    navigate('/dashboard');
   };
+
 
   const steps = [
     { id: 'brand', label: 'Marca', number: 1 },
@@ -159,7 +157,7 @@ export default function Home() {
               </p>
               <BrandAdd 
                 onSuccess={handleBrandSuccess}
-                onCancel={hasBrands ? handleBrandSuccess : undefined}
+                onCancel={hasBrands ? handleBrandSuccess : handleDashboard}
                 cancelButtonLabel={hasBrands ? 'Pular' : 'Cancelar'}
               />
             </div>
@@ -180,7 +178,7 @@ export default function Home() {
               </p>
               <ModelAdd 
                 onSuccess={handleModelSuccess}
-                onCancel={hasModels ? handleModelSuccess : undefined}
+                onCancel={hasModels ? handleModelSuccess : handleDashboard}
                 cancelButtonLabel={hasModels ? 'Pular' : 'Cancelar'}
               />
             </div>
@@ -197,7 +195,7 @@ export default function Home() {
               <p className="text-gray-600 mb-6">
                 Por fim, vamos cadastrar os dados do carro
               </p>
-              <CarAdd onSuccess={handleCarSuccess} />
+              <CarAdd onSuccess={handleCarSuccess} onCancel={handleDashboard} />
             </div>
           )}
 
@@ -210,18 +208,19 @@ export default function Home() {
                 />
               </div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Cadastro Completo!
+                Cadastro Completo
               </h2>
               <p className="text-gray-600 mb-8">
                 O veículo foi cadastrado com sucesso no sistema.
               </p>
               <button
-                onClick={handleRestart}
+                onClick={handleDashboard}
                 className="bg-blue-600 text-white py-3 px-8 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 inline-flex items-center gap-2"
               >
-                Cadastrar Novo Veículo
+                Ver Dashboard
                 <ArrowRight01Icon size={20} />
               </button>
+
             </div>
           )}
         </div>

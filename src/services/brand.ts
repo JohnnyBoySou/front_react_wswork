@@ -3,7 +3,7 @@ import customFetch from './fetch';
 export interface Brand {
     id: number;
     name: string;
-    modelEntities?: any[];
+    model?: any[];
 }
 
 export interface PaginatedResponse<T> {

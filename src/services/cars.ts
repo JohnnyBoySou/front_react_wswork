@@ -2,8 +2,8 @@ import customFetch from './fetch';
 
 export interface Car {
     id: string;
-    name: string;
-    registrationTimestamp: string;
+    createdAt?: string;
+    updatedAt?: string;
     year: number;   
     fuel: string;
     doorCount: number;
@@ -11,7 +11,7 @@ export interface Car {
     model: {
         id: number;
         name?: string;
-        fipeValue?: number;
+        fipe?: number;
     };
 }
 
@@ -69,9 +69,11 @@ const CarService = {
         const response = await customFetch(`${URI}/${id}`, { method: 'DELETE' });
         return response.json();
     },
-    listByBrand: async (brandId: number) => {
-        const response = await customFetch(`${URI}/brand/${brandId}`, { method: 'GET' });
-        return response.json();
+    listByBrand: async (brandId: number): Promise<Car[]> => {
+        const response = await customFetch(`${URI}/by-brand/${brandId}`, { method: 'GET' });
+        const data = await response.json();
+        // Verifica se é um objeto paginado ou array direto
+        return Array.isArray(data) ? data : (data.content || []);
     }
 }
 

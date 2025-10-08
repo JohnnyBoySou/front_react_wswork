@@ -13,13 +13,21 @@ interface CarAddProps {
 }
 
 const schema = z.object({
-    name: z.string().min(1, 'Nome é obrigatório'),
-    year: z.number().min(1900, 'Ano deve ser maior que 1900').max(new Date().getFullYear() + 1, 'Ano inválido'),
+    year: z.union([
+        z.number().min(1900, 'Ano deve ser maior que 1900').max(new Date().getFullYear() + 1, 'Ano inválido'),
+        z.nan()
+    ]).refine(val => !isNaN(val), { message: 'Ano é obrigatório' }),
     fuel: z.string().min(1, 'Combustível é obrigatório'),
-    doorCount: z.number().min(1, 'Número de portas deve ser pelo menos 1').max(10, 'Número máximo de portas é 10'),
+    doorCount: z.union([
+        z.number().min(1, 'Número de portas deve ser pelo menos 1').max(10, 'Número máximo de portas é 10'),
+        z.nan()
+    ]).refine(val => !isNaN(val), { message: 'Número de portas é obrigatório' }),
     color: z.string().min(1, 'Cor é obrigatória'),
     model: z.object({
-        id: z.number().min(1, 'Selecione um modelo')
+        id: z.union([
+            z.number().min(1, 'Selecione um modelo'),
+            z.nan()
+        ]).refine(val => !isNaN(val), { message: 'Modelo é obrigatório' })
     })
 });
 
@@ -88,29 +96,11 @@ export default function CarAdd( { onSuccess, onCancel }: CarAddProps = {}) {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                            Nome do Carro
-                        </label>
-                        <input
-                            {...register('name')}
-                            type="text"
-                            id="name"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Digite o nome do carro"
-                        />
-                        {errors.name && (
-                            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-                        )}
-                    </div>
-
-                    <div>
                         <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-2">
                             Ano
                         </label>
                         <input
-                            {...register('year', { 
-                                setValueAs: (v) => v === '' ? undefined : parseInt(v, 10)
-                            })}
+                            {...register('year', { valueAsNumber: true })}
                             type="number"
                             id="year"
                             min="1900"
@@ -150,9 +140,7 @@ export default function CarAdd( { onSuccess, onCancel }: CarAddProps = {}) {
                             Número de Portas
                         </label>
                         <input
-                            {...register('doorCount', { 
-                                setValueAs: (v) => v === '' ? undefined : parseInt(v, 10)
-                            })}
+                            {...register('doorCount', { valueAsNumber: true })}
                             type="number"
                             id="doorCount"
                             min="1"
@@ -186,9 +174,7 @@ export default function CarAdd( { onSuccess, onCancel }: CarAddProps = {}) {
                             Modelo
                         </label>
                         <select
-                            {...register('model.id', { 
-                                setValueAs: (v) => v === '' ? undefined : parseInt(v, 10)
-                            })}
+                            {...register('model.id', { valueAsNumber: true })}
                             id="modelId"
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             disabled={isLoadingModels}

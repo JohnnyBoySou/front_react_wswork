@@ -34,7 +34,8 @@ export default function CarCard({ car, onUpdate, onDelete }: CarCardProps) {
                     
                     <div className="text-xs text-gray-500 space-y-1">
                         <p><span className="font-medium">Modelo:</span> {car.model?.name || 'N/A'}</p>
-                        <p><span className="font-medium">Registrado em:</span> {formatDate(car.registrationTimestamp)}</p>
+                        <p><span className="font-medium">Registrado em:</span> {formatDate(car.createdAt || '')}</p>
+                        <p><span className="font-medium">Atualizado em:</span> {formatDate(car.updatedAt || '')}</p>
                     </div>
                 </div>
 

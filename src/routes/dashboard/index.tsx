@@ -6,7 +6,10 @@ import CarService, { type Car } from '@/services/cars';
 import BrandCard from '@/components/brand/card';
 import ModelCard from '@/components/model/card';
 import CarCard from '@/components/car/card';
-import { Add01Icon, Loading03Icon } from 'hugeicons-react';
+import BrandUpdate from '@/components/brand/update';
+import ModelUpdate from '@/components/model/update';
+import CarUpdate from '@/components/car/update';
+import { Add01Icon, Loading03Icon, Cancel01Icon } from 'hugeicons-react';
 
 type TabType = 'brands' | 'models' | 'cars';
 
@@ -19,6 +22,11 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBrandId, setSelectedBrandId] = useState<number | null>(null);
   const [allBrands, setAllBrands] = useState<Brand[]>([]);
+  
+  // Estados para modals de edição
+  const [editingBrandId, setEditingBrandId] = useState<number | null>(null);
+  const [editingModelId, setEditingModelId] = useState<number | null>(null);
+  const [editingCarId, setEditingCarId] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -42,7 +50,7 @@ export default function Dashboard() {
   const loadData = async () => {
     try {
       setIsLoading(true);
-      
+
       if (activeTab === 'brands') {
         const data = await BrandService.list(1, 50);
         setBrands(data);
@@ -52,11 +60,14 @@ export default function Dashboard() {
       } else if (activeTab === 'cars') {
         let data;
         if (selectedBrandId) {
+          console.log('selectedBrandId', selectedBrandId);
           data = await CarService.listByBrand(selectedBrandId);
+          console.log('data', data);
         } else {
           data = await CarService.list(1, 50);
         }
-        setCars(data);
+        // Garante que data é sempre um array
+        setCars(Array.isArray(data) ? data : []);
       }
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
@@ -131,19 +142,17 @@ export default function Dashboard() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-3 rounded-md font-medium transition-all duration-200 ${
-                activeTab === tab.id
+              className={`px-6 py-3 rounded-md font-medium transition-all duration-200 ${activeTab === tab.id
                   ? 'bg-blue-600 text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-100'
-              }`}
+                }`}
             >
               {tab.label}
               <span
-                className={`ml-2 px-2 py-1 rounded-full text-xs ${
-                  activeTab === tab.id
+                className={`ml-2 px-2 py-1 rounded-full text-xs ${activeTab === tab.id
                     ? 'bg-blue-500 text-white'
                     : 'bg-gray-200 text-gray-700'
-                }`}
+                  }`}
               >
                 {tab.count}
               </span>
@@ -193,7 +202,7 @@ export default function Dashboard() {
                       <BrandCard
                         key={brand.id}
                         brand={brand}
-                        onUpdate={() => navigate(`/brands/${brand.id}/edit`)}
+                        onUpdate={() => setEditingBrandId(brand.id)}
                         onDelete={() => handleBrandDelete(brand.id)}
                       />
                     ))}
@@ -235,7 +244,7 @@ export default function Dashboard() {
                       <ModelCard
                         key={model.id}
                         model={model}
-                        onUpdate={() => navigate(`/models/${model.id}/edit`)}
+                        onUpdate={() => setEditingModelId(model.id)}
                         onDelete={handleModelDelete}
                       />
                     ))}
@@ -307,7 +316,7 @@ export default function Dashboard() {
                       <CarCard
                         key={car.id}
                         car={car}
-                        onUpdate={() => navigate(`/cars/${car.id}/edit`)}
+                        onUpdate={() => setEditingCarId(car.id)}
                         onDelete={() => handleCarDelete(car.id)}
                       />
                     ))}
@@ -318,6 +327,78 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+
+      {/* Modal de Edição de Marca */}
+      {editingBrandId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-900">Editar Marca</h2>
+              <button
+                onClick={() => setEditingBrandId(null)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <Cancel01Icon size={24} />
+              </button>
+            </div>
+            <BrandUpdate
+              brandId={editingBrandId.toString()}
+              onSuccess={() => {
+                setEditingBrandId(null);
+                loadData();
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Edição de Modelo */}
+      {editingModelId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-900">Editar Modelo</h2>
+              <button
+                onClick={() => setEditingModelId(null)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <Cancel01Icon size={24} />
+              </button>
+            </div>
+            <ModelUpdate
+              modelId={editingModelId.toString()}
+              onSuccess={() => {
+                setEditingModelId(null);
+                loadData();
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Edição de Carro */}
+      {editingCarId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-900">Editar Carro</h2>
+              <button
+                onClick={() => setEditingCarId(null)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <Cancel01Icon size={24} />
+              </button>
+            </div>
+            <CarUpdate
+              carId={editingCarId}
+              onSuccess={() => {
+                setEditingCarId(null);
+                loadData();
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

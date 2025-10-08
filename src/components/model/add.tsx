@@ -2,13 +2,20 @@ import ModelService from '@/services/models';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Tick02Icon, Cancel01Icon } from 'hugeicons-react';
+import BrandService, { type Brand } from '@/services/brand';
 
 const schema = z.object({
     name: z.string().min(1, 'Nome é obrigatório'),
-    fipeValue: z.number().min(0, 'Valor FIPE deve ser maior ou igual a 0'),
+    fipe: z.union([
+        z.number().min(0, 'Valor FIPE deve ser maior ou igual a 0'),
+        z.nan().transform(() => 0)
+    ]),
+    brand: z.object({
+        id: z.number().min(1, 'Marca é obrigatória')
+    })
 });
 
 type FormData = z.infer<typeof schema>;
@@ -23,7 +30,16 @@ export default function ModelAdd({ onSuccess, onCancel, cancelButtonLabel = 'Can
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const [brands, setBrands] = useState<Brand[]>([]);  
 
+
+    useEffect(() => {
+        const loadBrands = async () => {
+            const brands = await BrandService.list(1, 100);
+            setBrands(brands);
+        };
+        loadBrands();
+    }, []);
     const {
         register,
         handleSubmit,
@@ -54,18 +70,32 @@ export default function ModelAdd({ onSuccess, onCancel, cancelButtonLabel = 'Can
         }
     };
 
-    const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        }).format(value);
-    };
-
     return (
         <div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="brandId" className="block text-sm font-medium text-gray-700 mb-2">
+                        Marca
+                    </label>
+                    <select
+                        {...register('brand.id', { valueAsNumber: true })}
+                        id="brandId"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                        <option value="">Selecione uma marca</option>
+                        {brands.map((brand) => (
+                            <option key={brand.id} value={brand.id}>
+                                {brand.name}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.brand?.id && (
+                        <p className="mt-1 text-sm text-red-600">{errors.brand.id.message}</p>
+                    )}
+                </div>
+
+                <div>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                         Nome do Modelo
                     </label>
                     <input
@@ -87,17 +117,17 @@ export default function ModelAdd({ onSuccess, onCancel, cancelButtonLabel = 'Can
                     <div className="relative">
                         <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R$</span>
                         <input
-                            {...register('fipeValue', { valueAsNumber: true })}
+                            {...register('fipe', { valueAsNumber: true })}
                             type="number"
-                            id="fipeValue"
+                            id="fipe"
                             step="0.01"
                             min="0"
                             className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder="0,00"
                         />
                     </div>
-                    {errors.fipeValue && (
-                        <p className="mt-1 text-sm text-red-600">{errors.fipeValue.message}</p>
+                    {errors.fipe && (
+                        <p className="mt-1 text-sm text-red-600">{errors.fipe.message}</p>
                     )}
                 </div>
 

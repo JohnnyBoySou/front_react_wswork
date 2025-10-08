@@ -1,11 +1,6 @@
 import { useState } from 'react';
-import ModelService from '@/services/models';
+import ModelService, { type Model } from '@/services/models';
 
-interface Model {
-    id: number;
-    name: string;
-    fipeValue: number;
-}
 
 interface ModelCardProps {
     model: Model;
@@ -52,7 +47,7 @@ export default function ModelCard({ model, onUpdate, onDelete }: ModelCardProps)
                         <div className="mb-2">
                             <span className="font-medium">Valor FIPE:</span>
                             <span className="ml-2 text-lg font-bold text-green-600">
-                                {formatCurrency(model.fipeValue)}
+                                {formatCurrency(model.fipe)}
                             </span>
                         </div>
                     </div>

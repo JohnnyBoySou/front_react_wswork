@@ -8,7 +8,10 @@ import { Tick02Icon, Cancel01Icon } from 'hugeicons-react';
 
 const schema = z.object({
     name: z.string().min(1, 'Nome é obrigatório'),
-    fipeValue: z.number().min(0, 'Valor FIPE deve ser maior ou igual a 0'),
+    fipe: z.union([
+        z.number().min(0, 'Valor FIPE deve ser maior ou igual a 0'),
+        z.nan().transform(() => 0)
+    ]),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -16,7 +19,7 @@ type FormData = z.infer<typeof schema>;
 interface Model {
     id: number;
     name: string;
-    fipeValue: number;
+    fipe: number;
 }
 
 interface ModelUpdateProps {
@@ -45,7 +48,7 @@ export default function ModelUpdate({ modelId, onSuccess }: ModelUpdateProps) {
                 setIsLoadingModel(true);
                 const model: Model = await ModelService.get(modelId);
                 setValue('name', model.name);
-                setValue('fipeValue', model.fipeValue);
+                setValue('fipe', model.fipe);
             } catch (err) {
                 setError('Erro ao carregar modelo. Tente novamente.');
                 console.error('Error loading model:', err);
@@ -107,23 +110,23 @@ export default function ModelUpdate({ modelId, onSuccess }: ModelUpdateProps) {
                 </div>
 
                 <div>
-                    <label htmlFor="fipeValue" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="fipe" className="block text-sm font-medium text-gray-700 mb-2">
                         Valor FIPE
                     </label>
                     <div className="relative">
                         <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R$</span>
                         <input
-                            {...register('fipeValue', { valueAsNumber: true })}
+                            {...register('fipe', { valueAsNumber: true })}
                             type="number"
-                            id="fipeValue"
+                            id="fipe"
                             step="0.01"
                             min="0"
                             className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder="0,00"
                         />
                     </div>
-                    {errors.fipeValue && (
-                        <p className="mt-1 text-sm text-red-600">{errors.fipeValue.message}</p>
+                    {errors.fipe && (
+                        <p className="mt-1 text-sm text-red-600">{errors.fipe.message}</p>
                     )}
                 </div>
 

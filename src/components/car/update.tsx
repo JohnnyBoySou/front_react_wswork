@@ -94,7 +94,6 @@ export default function CarUpdate({ carId, onSuccess, onCancel }: CarUpdateProps
             
             const carData = {
                 ...data,
-                registrationTimestamp: new Date().toISOString(),
             };
             
             await CarService.update(carId, carData);
